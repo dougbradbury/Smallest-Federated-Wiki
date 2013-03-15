@@ -395,7 +395,7 @@ require.define("/lib/wiki.coffee",function(require,module,exports,__dirname,__fi
   var createSynopsis, wiki,
     __slice = [].slice;
 
-  createSynopsis = require('./synopsis');
+  createSynopsis = require('./synopsis.coffee');
 
   wiki = {
     createSynopsis: createSynopsis
@@ -931,13 +931,13 @@ require.define("/test/pageHandler.coffee",function(require,module,exports,__dirn
 require.define("/lib/pageHandler.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var addToJournal, pageFromLocalStorage, pageHandler, pushToLocal, pushToServer, recursiveGet, revision, state, util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
-  state = require('./state');
+  state = require('./state.coffee');
 
-  revision = require('./revision');
+  revision = require('./revision.coffee');
 
-  addToJournal = require('./addToJournal');
+  addToJournal = require('./addToJournal.coffee');
 
   module.exports = pageHandler = {};
 
@@ -1156,7 +1156,7 @@ require.define("/lib/state.coffee",function(require,module,exports,__dirname,__f
   var active, state,
     __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  active = require('./active');
+  active = require('./active.coffee');
 
   module.exports = state = {};
 
@@ -1340,7 +1340,7 @@ require.define("/lib/revision.coffee",function(require,module,exports,__dirname,
 require.define("/lib/addToJournal.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
   module.exports = function(journalElement, action) {
     var actionElement, actionTitle, controls, pageElement, prev;
@@ -1449,9 +1449,9 @@ require.define("/lib/refresh.coffee",function(require,module,exports,__dirname,_
 
   neighborhood = require('./neighborhood.coffee');
 
-  addToJournal = require('./addToJournal');
+  addToJournal = require('./addToJournal.coffee');
 
-  wiki = require('./wiki');
+  wiki = require('./wiki.coffee');
 
   handleDragging = function(evt, ui) {
     var action, before, beforeElement, destinationPageElement, equals, item, itemElement, moveFromPage, moveToPage, moveWithinPage, order, sourcePageElement, sourceSite, thisPageElement;
@@ -2089,9 +2089,9 @@ require.define("/lib/neighborhood.coffee",function(require,module,exports,__dirn
 require.define("/lib/search.coffee",function(require,module,exports,__dirname,__filename,process,global){(function() {
   var active, createSearch, util;
 
-  util = require('./util');
+  util = require('./util.coffee');
 
-  active = require('./active');
+  active = require('./active.coffee');
 
   createSearch = function(_arg) {
     var neighborhood, performSearch;
@@ -3435,7 +3435,7 @@ require.define("/testclient.coffee",function(require,module,exports,__dirname,__
 
   mocha.setup('bdd');
 
-  window.wiki = require('./lib/wiki');
+  window.wiki = require('./lib/wiki.coffee');
 
   require('./test/util.coffee');
 
@@ -3888,48 +3888,48 @@ require.define("/plugins/report/test.coffee",function(require,module,exports,__d
         issue = report.parse("WEEKLY")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("Sun Dec 16 2012 00:00:00");
-        expect(count(0)).to.contain("Sun Dec 23 2012 00:00:00");
-        expect(count(1)).to.contain("Sun Dec 30 2012 00:00:00");
-        return expect(count(2)).to.contain("Sun Jan 06 2013 00:00:00");
+        expect(count(-1)).to.eql(new Date(2012, 12 - 1, 16));
+        expect(count(0)).to.eql(new Date(2012, 12 - 1, 23));
+        expect(count(1)).to.eql(new Date(2012, 12 - 1, 30));
+        return expect(count(2)).to.eql(new Date(2013, 1 - 1, 6));
       });
       it('handles weeks with offsets (noon > now)', function() {
         var count, date, issue;
         issue = report.parse("WEEKLY TUESDAY NOON")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("Tue Dec 11 2012 12:00:00");
-        expect(count(0)).to.contain("Tue Dec 18 2012 12:00:00");
-        expect(count(1)).to.contain("Tue Dec 25 2012 12:00:00");
-        return expect(count(2)).to.contain("Tue Jan 01 2013 12:00:00");
+        expect(count(-1)).to.eql(new Date(2012, 12 - 1, 11, 12));
+        expect(count(0)).to.eql(new Date(2012, 12 - 1, 18, 12));
+        expect(count(1)).to.eql(new Date(2012, 12 - 1, 25, 12));
+        return expect(count(2)).to.eql(new Date(2013, 1 - 1, 1, 12));
       });
       it('handles years with offsets (march < now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY MARCH FRIDAY EVENING")[0];
         date = new Date(2012, 12 - 1, 25, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("Fri Mar 04 2011 18:00:00");
-        expect(count(0)).to.contain("Fri Mar 02 2012 18:00:00");
-        expect(count(1)).to.contain("Fri Mar 01 2013 18:00:00");
-        return expect(count(2)).to.contain("Fri Mar 07 2014 18:00:00");
+        expect(count(-1)).to.eql(new Date(2011, 3 - 1, 4, 18));
+        expect(count(0)).to.eql(new Date(2012, 3 - 1, 2, 18));
+        expect(count(1)).to.eql(new Date(2013, 3 - 1, 1, 18));
+        return expect(count(2)).to.eql(new Date(2014, 3 - 1, 7, 18));
       });
       return it('handles election day (election > now)', function() {
         var count, date, issue;
         issue = report.parse("YEARLY NOVEMBER MONDAY TUESDAY MORNING")[0];
         date = new Date(2016, 1, 2, 3, 4, 5);
         count = function(i) {
-          return report.advance(date, issue, i).toString();
+          return report.advance(date, issue, i);
         };
-        expect(count(-1)).to.contain("Tue Nov 04 2014 06:00:00");
-        expect(count(0)).to.contain("Tue Nov 03 2015 06:00:00");
-        expect(count(1)).to.contain("Tue Nov 08 2016 06:00:00");
-        return expect(count(2)).to.contain("Tue Nov 07 2017 06:00:00");
+        expect(count(-1)).to.eql(new Date(2014, 11 - 1, 4, 6));
+        expect(count(0)).to.eql(new Date(2015, 11 - 1, 3, 6));
+        expect(count(1)).to.eql(new Date(2016, 11 - 1, 8, 6));
+        return expect(count(2)).to.eql(new Date(2017, 11 - 1, 7, 6));
       });
     });
   });
